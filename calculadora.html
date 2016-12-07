@@ -24,7 +24,7 @@ function initialize_calculation(){
   var contribution_input = document.getElementById('contribution').value;
   var sector_input = document.querySelector('input[name=\"sector\"]:checked').value;
   var result_old = calculadoraOld(gender_input, age_input, contribution_input, sector_input);
-  var result_new = calculadoraNew(gender_input, age_input, contribution_input);
+  var result_new = calculadoraNew(gender_input, age_input, contribution_input, sector_input);
   message('new_value',  'value_new', result_new);
   message('old_value',  'value_old', result_old);
 }
@@ -97,20 +97,19 @@ function calculatePrivateOldRulesMan(age, contribution) {
   return time_left;
 };
 
-function calculadoraNew(gender, age, contribution) {
+function calculadoraNew(gender, age, contribution, service) {
  var rules = newRules(gender, age);
 
  if (rules == 'new') {
    var result_new = calculateNewRules(age, contribution);
  }
  else {
-
-   var partial = calculadoraOld(age, contribution);
-   var result_new = (1.5 * partial);
+   var partial = calculadoraOld(gender, age, contribution, service);
+   var result_new = (1.5 * (partial - age));
  }
 
  result_new = Number(result_new) + Number(age);
- return result_new;
+ return Math.round(result_new);
 
 };
 
@@ -130,7 +129,7 @@ function calculadoraOld(gender, age, contribution, service) {
    var result_old = calculatePrivateOldRulesMan(age, contribution);
  }
  result_old = Number(result_old) + Number(age);
- return result_old;
+ return Math.round(result_old);
 };
 
 function message(element, span_id, text){
