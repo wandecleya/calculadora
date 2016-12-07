@@ -1,8 +1,6 @@
-<body>
+
 
 <h1>Calculadora</h1>
-
-<p>Teste: <span id="teste"></span></p>
 
 <span>Sexo<span/>
 <input type="radio" name="gender" value="F" checked> Feminino
@@ -17,10 +15,9 @@
 <input type="button" value="Submit" onclick="initialize()">
 
 
-<p>Novas Regras: <span id="new"></span></p>
-<span id="new_value"></span>
-<p>Regras Atuais: <span id="old"></span></p>
-<span id="old_value"></span>
+<p>Novas Regras: <span id="new_value"></span></p>
+<p>Regras Atuais: <span id="old_value"></span></p>
+
 
 <script>
 function initialize (){
@@ -114,6 +111,7 @@ function calculadoraNew(gender, age, contribution) {
    var result_new = (1.5 * partial);
  }
 
+ result_new = Number(result_new) + Number(age);
  return result_new;
 
 };
@@ -134,7 +132,7 @@ console.log("aqui " + gender + " " + age + " " + contribution + " " + service);
  else if (rules == "private_man") {
    var result_old = calculatePrivateOldRulesMan(age, contribution);
  }
-
+ result_old = Number(result_old) + Number(age);
  return result_old;
 };
 
@@ -143,6 +141,3 @@ function message(element, text){
 };
 
 </script>
-
-
-</body>
