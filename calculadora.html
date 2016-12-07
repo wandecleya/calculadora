@@ -1,14 +1,34 @@
 <body>
 
-<h1>JavaScript Functions</h1>
-
-<p>This example calls a function which performs a calculation, and returns the result:</p>
+<h1>Calculadora</h1>
 
 <p>Novas Regras: <span id="new"></span></p>
 <p>Regras Atuais: <span id="old"></span></p>
+<p>Teste: <span id="teste"></span></p>
+<form>
+  <span>Sexo<span/>
+  <input type="radio" name="gender" value="F" checked> Feminino
+  <input type="radio" name="gender" value="M"> Masculino<br>
+  <span>Idade</span>
+  <input type="number" id="age" min="16" max="120"><br>
+  <span>Contribuição</span>
+  <input type="number" id="contribution" min="0" max="104"><br>
+  <span>Setor<span/>
+  <input type="radio" name="sector" value="PRIVATE" checked> Privado
+  <input type="radio" name="sector" value="PUBLIC"> Público<br><br>
+  <input type="submit" value="Submit" onclick="initialize()">
+</form>
 
 
 <script>
+function initialize (){
+  var gender_input = document.querySelector('input[name="gender"]:checked').value;
+  var age_input = document.getElementById('age').value;
+  var contribution_input = document.getElementById('contribution').value;
+  var sector_input = document.querySelector('input[name="sector"]:checked').value;
+  calculadoraOld(gender_input, age_input, contribution_input, sector_input);
+}
+
 function newRules(gender, age) {
 
  if((gender == "F") && (age <=45) || (gender == "M") && (age <=50)){
@@ -96,9 +116,8 @@ function calculadoraNew() {
 
 };
 
-function calculadoraOld(age, contribution) {
- var gender = "M";
- var service = "PRIVATE";
+function calculadoraOld(gender, age, contribution, service) {
+console.log("aqui " + gender + " " + age + " " + contribution + " " + service);
  var rules = oldRules(service, gender);
 
  if (rules == "public_woman") {
@@ -114,11 +133,13 @@ function calculadoraOld(age, contribution) {
    var result_old = calculatePrivateOldRulesMan(age, contribution);
  }
 
+ alert("Regras Atuais: " + result_old);
  return result_old;
 
 };
-document.getElementById("old").innerHTML = calculadoraOld(40, 7);
-document.getElementById("new").innerHTML = calculadoraNew();
+
+
+
 </script>
 
 
