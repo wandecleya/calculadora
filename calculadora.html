@@ -1,61 +1,59 @@
+<div class='form'>
+  <p>Sexo<p/>
+  <input type='radio' name='gender' value='F' checked> Feminino
+  <input type='radio' name='gender' value='M'> Masculino<br>
+  <p>Idade</p>
+  <input type='number' id='age' min='16' max='120'><br>
+  <p>Contribuição</p>
+  <input type='number' id='contribution' min='0' max='104'><br>
+  <p>Setor<p/>
+  <input type='radio' name='sector' value='PRIVATE' checked> Privado
+  <input type='radio' name='sector' value='PUBLIC'> Público<br>
+  <input type='button' value='Calcule' onclick='initialize_calculation()'>
+</div>
 
-
-<h1>Calculadora</h1>
-
-<span>Sexo<span/>
-<input type="radio" name="gender" value="F" checked> Feminino
-<input type="radio" name="gender" value="M"> Masculino<br>
-<span>Idade</span>
-<input type="number" id="age" min="16" max="120"><br>
-<span>Contribuição</span>
-<input type="number" id="contribution" min="0" max="104"><br>
-<span>Setor<span/>
-<input type="radio" name="sector" value="PRIVATE" checked> Privado
-<input type="radio" name="sector" value="PUBLIC"> Público<br><br>
-<input type="button" value="Submit" onclick="initialize()">
-
-
-<p>Novas Regras: <span id="new_value"></span></p>
-<p>Regras Atuais: <span id="old_value"></span></p>
-
+<div class='results'>
+  <p  id='new_value'>Novas Regras: </p>
+  <p  id='old_value'>Regras Atuais: </p>
+</div>
 
 <script>
-function initialize (){
-  var gender_input = document.querySelector('input[name="gender"]:checked').value;
+function initialize_calculation(){
+  var gender_input = document.querySelector('input[name=\"gender\"]:checked').value;
   var age_input = document.getElementById('age').value;
   var contribution_input = document.getElementById('contribution').value;
-  var sector_input = document.querySelector('input[name="sector"]:checked').value;
+  var sector_input = document.querySelector('input[name=\"sector\"]:checked').value;
   var result_old = calculadoraOld(gender_input, age_input, contribution_input, sector_input);
   var result_new = calculadoraNew(gender_input, age_input, contribution_input);
-  message("new_value", result_new);
-  message("old_value", result_old);
+  message('new_value',  'value_new', result_new);
+  message('old_value',  'value_old', result_old);
 }
 
 function newRules(gender, age) {
 
- if((gender == "F") && (age <=45) || (gender == "M") && (age <=50)){
-   return "new";
+ if((gender == 'F') && (age <=45) || (gender == 'M') && (age <=50)){
+   return 'new';
  }
  else {
-   return "old";
+   return 'old';
  }
 }
 
 function oldRules(service, gender) {
-  if(service == "PUBLIC"){
-    if (gender == "F") {
-      return "public_woman";
+  if(service == 'PUBLIC'){
+    if (gender == 'F') {
+      return 'public_woman';
     }
-    else if (gender == "M") {
-      return "public_man";
+    else if (gender == 'M') {
+      return 'public_man';
     }
   }
   else{
-    if (gender == "F") {
-      return "private_woman";
+    if (gender == 'F') {
+      return 'private_woman';
     }
-    else if (gender == "M") {
-      return "private_man";
+    else if (gender == 'M') {
+      return 'private_man';
     }
   }
 }
@@ -102,7 +100,7 @@ function calculatePrivateOldRulesMan(age, contribution) {
 function calculadoraNew(gender, age, contribution) {
  var rules = newRules(gender, age);
 
- if (rules == "new") {
+ if (rules == 'new') {
    var result_new = calculateNewRules(age, contribution);
  }
  else {
@@ -117,27 +115,30 @@ function calculadoraNew(gender, age, contribution) {
 };
 
 function calculadoraOld(gender, age, contribution, service) {
-console.log("aqui " + gender + " " + age + " " + contribution + " " + service);
  var rules = oldRules(service, gender);
 
- if (rules == "public_woman") {
+ if (rules == 'public_woman') {
    var result_old = calculatePublicOldRulesWoman(age, contribution);
  }
- else if (rules == "public_man") {
+ else if (rules == 'public_man') {
    var result_old = calculatePublicOldRulesMan(age, contribution);
  }
- else if (rules == "private_woman") {
+ else if (rules == 'private_woman') {
    var result_old = calculatePrivateOldRulesWoman(age, contribution);
  }
- else if (rules == "private_man") {
+ else if (rules == 'private_man') {
    var result_old = calculatePrivateOldRulesMan(age, contribution);
  }
  result_old = Number(result_old) + Number(age);
  return result_old;
 };
 
-function message(element, text){
-  document.getElementById(element).innerText = text;
+function message(element, span_id, text){
+  var new_element = document.getElementById(element);
+  var span = document.createElement('span');
+  span.setAttribute('id', span_id);
+  new_element.appendChild(span);
+  document.getElementById(span_id).innerText = text;
 };
 
 </script>
