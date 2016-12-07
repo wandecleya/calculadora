@@ -79,12 +79,17 @@ function calculatePrivateOldRulesMan(age, contribution) {
 
 function calculadoraNew() {
  var gender = "F";
- var age = 45;
+ var age = 50;
  var contribution = 2;
  var rules = newRules(gender, age);
 
  if (rules == "new") {
    var result_new = calculateNewRules(age, contribution);
+ }
+ else {
+
+   var partial = calculadoraOld(age, contribution);
+   var result_new = (1.5 * partial);
  }
 
  return result_new;
@@ -93,8 +98,6 @@ function calculadoraNew() {
 
 function calculadoraOld(age, contribution) {
  var gender = "M";
- var age = 50;
- var contribution = 12;
  var service = "PRIVATE";
  var rules = oldRules(service, gender);
 
@@ -114,7 +117,7 @@ function calculadoraOld(age, contribution) {
  return result_old;
 
 };
-document.getElementById("old").innerHTML = calculadoraOld();
+document.getElementById("old").innerHTML = calculadoraOld(40, 7);
 document.getElementById("new").innerHTML = calculadoraNew();
 </script>
 
