@@ -1,0 +1,122 @@
+<body>
+
+<h1>JavaScript Functions</h1>
+
+<p>This example calls a function which performs a calculation, and returns the result:</p>
+
+<p>Novas Regras: <span id="new"></span></p>
+<p>Regras Atuais: <span id="old"></span></p>
+
+
+<script>
+function newRules(gender, age) {
+
+ if((gender == "F") && (age <=45) || (gender == "M") && (age <=50)){
+   return "new";
+ }
+ else {
+   return "old";
+ }
+}
+
+function oldRules(service, gender) {
+  if(service == "PUBLIC"){
+    if (gender == "F") {
+      return "public_woman";
+    }
+    else if (gender == "M") {
+      return "public_man";
+    }
+  }
+  else{
+    if (gender == "F") {
+      return "private_woman";
+    }
+    else if (gender == "M") {
+      return "private_man";
+    }
+  }
+}
+
+function calculateNewRules(age, contribution) {
+  var age_time = 65 - age;
+  var contribution_time = 25 - contribution;
+  var time_left = Math.max(age_time, contribution_time);
+  return time_left;
+};
+
+function calculatePublicOldRulesWoman(age, contribution) {
+  var age_time = 55 - age;
+  var contribution_time = 30 - contribution;
+  var time_left = Math.max(age_time, contribution_time);
+  return time_left;
+};
+
+function calculatePublicOldRulesMan(age, contribution) {
+  var age_time = 60 - age;
+  var contribution_time = 35 - contribution;
+  var time_left = Math.max(age_time, contribution_time);
+  return time_left;
+};
+
+function calculatePrivateOldRulesWoman(age, contribution) {
+  var age_time = 60 - age;
+  var age_contribution_time = 15 - contribution;
+  var contribution_time = 30 - contribution;
+  var age_time_left = Math.max(age_time, age_contribution_time);
+  var time_left = Math.min(age_time_left, contribution_time);
+  return time_left;
+};
+
+function calculatePrivateOldRulesMan(age, contribution) {
+  var age_time = 65 - age;
+  var age_contribution_time = 15 - contribution;
+  var contribution_time = 35 - contribution;
+  var age_time_left = Math.max(age_time, age_contribution_time);
+  var time_left = Math.min(age_time_left, contribution_time);
+  return time_left;
+};
+
+function calculadoraNew() {
+ var gender = "F";
+ var age = 45;
+ var contribution = 2;
+ var rules = newRules(gender, age);
+
+ if (rules == "new") {
+   var result_new = calculateNewRules(age, contribution);
+ }
+
+ return result_new;
+
+};
+
+function calculadoraOld(age, contribution) {
+ var gender = "M";
+ var age = 50;
+ var contribution = 12;
+ var service = "PRIVATE";
+ var rules = oldRules(service, gender);
+
+ if (rules == "public_woman") {
+   var result_old = calculatePublicOldRulesWoman(age, contribution);
+ }
+ else if (rules == "public_man") {
+   var result_old = calculatePublicOldRulesMan(age, contribution);
+ }
+ else if (rules == "private_woman") {
+   var result_old = calculatePrivateOldRulesWoman(age, contribution);
+ }
+ else if (rules == "private_man") {
+   var result_old = calculatePrivateOldRulesMan(age, contribution);
+ }
+
+ return result_old;
+
+};
+document.getElementById("old").innerHTML = calculadoraOld();
+document.getElementById("new").innerHTML = calculadoraNew();
+</script>
+
+
+</body>
