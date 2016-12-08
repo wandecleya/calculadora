@@ -40,7 +40,8 @@
   <input class='radio' type='radio' name='sector' value='PUBLIC'> Estatutário<br>
   <input type='button' value='Calcule' onclick='initialize_calculation()'>
 </div>
-<div class='results'>
+
+<div class='results' id='id_results'>
   <p id='new_value'></p>
   <p id='old_value'></p>
   <p id='retired'></p>
@@ -48,6 +49,10 @@
 
 <script>
 function initialize_calculation(){
+  clear_results('new_value');
+  clear_results('retired');
+  clear_results('old_value');
+
   var gender_input = document.querySelector('input[name=\"gender\"]:checked').value;
   var age_input = document.getElementById('age').value;
   var contribution_input = document.getElementById('contribution').value;
@@ -178,6 +183,15 @@ function message(element, text){
   else {
     document.getElementById(element).innerHTML = '<p>' + text + '</p>';
   }
+};
+
+function clear_results(div){
+  var myNode = document.getElementById(div);
+  if (myNode) {
+    while (myNode.firstChild) {
+      myNode.removeChild(myNode.firstChild);
+    };
+  };
 };
 
 </script>
