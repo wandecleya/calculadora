@@ -13,8 +13,8 @@
 </div>
 
 <div class='results'>
-  <p  id='new_value'>Novas Regras: </p>
-  <p  id='old_value'>Regras Atuais: </p>
+  <p  id='new_value'></p>
+  <p  id='old_value'></p>
 </div>
 
 <script>
@@ -25,8 +25,8 @@ function initialize_calculation(){
   var sector_input = document.querySelector('input[name=\"sector\"]:checked').value;
   var result_old = calculadoraOld(gender_input, age_input, contribution_input, sector_input);
   var result_new = calculadoraNew(gender_input, age_input, contribution_input, sector_input);
-  message('new_value',  'value_new', result_new);
-  message('old_value',  'value_old', result_old);
+  message('new_value', result_new);
+  message('old_value', result_old);
 }
 
 function newRules(gender, age) {
@@ -105,7 +105,7 @@ function calculadoraNew(gender, age, contribution, service) {
  }
  else {
    var partial = calculadoraOld(gender, age, contribution, service);
-   var result_new = (1.5 * (partial - age));
+   var result_new = (1.5 * Math.abs(age - partial));
  }
 
  result_new = Number(result_new) + Number(age);
@@ -132,12 +132,13 @@ function calculadoraOld(gender, age, contribution, service) {
  return Math.round(result_old);
 };
 
-function message(element, span_id, text){
-  var new_element = document.getElementById(element);
-  var span = document.createElement('span');
-  span.setAttribute('id', span_id);
-  new_element.appendChild(span);
-  document.getElementById(span_id).innerText = text;
+function message(element, text){
+  if (element == "new_value") {
+  document.getElementById(element).innerHTML = "<p>Se a reforma for aprovada, voce</p>" + "<p id='newrulevalue'>" + text + "</p>" + "<p>anos</p>";
+} else {
+  document.getElementById(element).innerHTML = "<p>Pelas legislação atual:</p>" + "<p id='oldrulevalue'>" + text  + "</p>" + "<p>anos</p>";
+}
+
 };
 
 </script>
