@@ -1,20 +1,49 @@
+<style>
+  .label {
+      font-weight: bold;
+  }
+
+  p {
+    font: 1.1rem/1.6 'Merriweather Sans', Arial;
+  }
+
+  input {
+    margin-right: 10px;
+    padding: 0 10px 0 0;
+  }
+
+  .multimedia {
+    padding: 20px;
+  }
+
+  .number {
+    height: 40px;
+    font-size: 1.1rem;
+    margin: 10px 0 20px;
+  }
+
+  .radio {
+    margin: 10px 5px 20px;
+  }
+
+</style>
 <div class='form'>
-  <p class='label'>Qual o seu sexo?<p/>
-  <input type='radio' name='gender' value='F' checked> Feminino
-  <input type='radio' name='gender' value='M'> Masculino<br>
-  <p class='label'>Qual a sua idade?</p>
-  <input type='number' id='age' min='16' max='120'><br>
-  <p class='label'>Por quanto tempo trabalhou com carteira assinada?</p>
-  <input type='number' id='contribution' min='0' max='104'><br>
-  <p class='label'>Em qual setor trabalha?<p/>
-  <input type='radio' name='sector' value='PRIVATE' checked> Privado
-  <input type='radio' name='sector' value='PUBLIC'> Público<br>
+  <p class='label'>Você é:<p/>
+  <input class='radio' type='radio' name='gender' value='F' checked> Mulher
+  <input class='radio' type='radio' name='gender' value='M'> Homem<br>
+  <p class='label'>Sua idade:</p>
+  <input class='number' type='number' id='age' min='16' max='120'><br>
+  <p class='label'>Quantos anos trabalhou com carteira assinada:</p>
+  <input class='number' type='number' id='contribution' min='0' max='104'><br>
+  <p class='label'>Qual seu regime de trabalho:<p/>
+  <input class='radio' type='radio' name='sector' value='PRIVATE' checked> CLT
+  <input class='radio' type='radio' name='sector' value='PUBLIC'> Estatutário<br>
   <input type='button' value='Calcule' onclick='initialize_calculation()'>
 </div>
-
 <div class='results'>
-  <p  id='new_value'></p>
-  <p  id='old_value'></p>
+  <p id='new_value'></p>
+  <p id='old_value'></p>
+  <p id='retired'></p>
 </div>
 
 <script>
@@ -25,8 +54,15 @@ function initialize_calculation(){
   var sector_input = document.querySelector('input[name=\"sector\"]:checked').value;
   var result_old = calculadoraOld(gender_input, age_input, contribution_input, sector_input);
   var result_new = calculadoraNew(gender_input, age_input, contribution_input, sector_input);
-  message('new_value', result_new);
-  message('old_value', result_old);
+  if(result_old <= age_input){
+    var retired = 'Você já pode se aposentar! As novas Regras não se aplicam.';
+    message('retired', retired);
+  }
+  else {
+    message('new_value', result_new);
+    message('old_value', result_old);
+  }
+
 }
 
 function newRules(gender, age) {
@@ -133,12 +169,15 @@ function calculadoraOld(gender, age, contribution, service) {
 };
 
 function message(element, text){
-  if (element == "new_value") {
-  document.getElementById(element).innerHTML = "<p>Se a reforma for aprovada, voce</p>" + "<p id='newrulevalue'>" + text + "</p>" + "<p>anos</p>";
-} else {
-  document.getElementById(element).innerHTML = "<p>Pelas legislação atual:</p>" + "<p id='oldrulevalue'>" + text  + "</p>" + "<p>anos</p>";
-}
-
+  if (element == 'new_value') {
+    document.getElementById(element).innerHTML = '<p>Se a reforma for aprovada, você</p>' + '<p id=\"newrulevalue\">' + text + '</p>' + '<p>anos</p>';
+  }
+  else if (element == 'old_value') {
+    document.getElementById(element).innerHTML = '<p>Pelas legislação atual:</p>' + '<p id=\"oldrulevalue\">' + text  + '</p>' + '<p>anos</p>';
+  }
+  else {
+    document.getElementById(element).innerHTML = '<p>' + text + '</p>';
+  }
 };
 
 </script>
