@@ -134,7 +134,7 @@ function initialize_calculation(){
     message('retired', retired);
   }
   else {
-    message('new_value', result_new, gender_input);
+    message('new_value', result_new[0], gender_input);
     message('old_value', result_old, gender_input);
   }
 
@@ -173,7 +173,9 @@ function calculateNewRules(age, contribution) {
   var age_time = 65 - age;
   var contribution_time = 25 - contribution;
   var time_left = Math.max(age_time, contribution_time);
-  return time_left;
+  var time_left_100 = time_left + 24;
+  var result = [time_left, time_left_100];
+  return result;
 };
 
 function calculatePublicOldRulesWoman(age, contribution) {
@@ -219,8 +221,11 @@ function calculadoraNew(gender, age, contribution, service) {
    var result_new = (1.5 * Math.abs(age - partial));
  }
 
- result_new = Number(result_new) + Number(age);
- return Math.round(result_new);
+ for (var i; i<result_new.lenght; i++) {
+   result_new[i] = Math.round( Number(result_new[i]) + Number(age));
+
+ }
+ return result_new;
 
 };
 
