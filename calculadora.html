@@ -200,7 +200,6 @@ function calcularEstatutarioPorContribuicao(age, contribution, gender) {
   var contribution_time = Number(gender_contribution) - Number(contribution);
   var time_left_maximum = Math.max(Number(age_time), Number(contribution_time));
 
-
   var time_left = [time_left_minimum, time_left_maximum];
 
   return time_left;
@@ -238,7 +237,10 @@ function calculadoraNew(gender, age, contribution, service) {
  }
  else {
    var partial = calculadoraOld(gender, age, contribution, service);
-   var result_new = (1.5 * Math.abs(age - partial));
+   var result_new = [];
+   for(var i=0; i<2; i++){
+     result_new[i] = (Number(1.5) * Math.abs(Number(age) - Number(partial[i])));
+   }
  }
 
  result_new = retorna_idade(result_new, age);
