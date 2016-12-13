@@ -130,14 +130,28 @@ function initialize_calculation(){
   var result_old = calculadoraOld(gender_input, age_input, contribution_input, sector_input);
   var result_new = calculadoraNew(gender_input, age_input, contribution_input, sector_input);
   if(result_old <= age_input){
-    var retired = 'Você já pode se aposentar!<br> As novas Regras não se aplicam.';
+    var retired = 'Você já pode se aposentar! As novas regras não se aplicam';
     message('retired', retired);
   }
+  else if (valida_idade_estatutaria(result_old, sector_input, gender_input)) {
+    var retired_public = 'Você já pode se aposentar!';
+    message('retired_public ', retired_public)
+  }
   else {
-    message('new_value', result_new[0], gender_input);
+    message('new_value', result_new, gender_input);
     message('old_value', result_old, gender_input);
   }
 
+}
+
+function valida_idade_estatutaria (idade_de_aposentadoria, setor, gender) {
+  var result = false;
+  var gender_age = (gender == 'F' ? 70 : 75 );
+  if((setor == 'PUBLIC') && (idade_de_aposentadoria >= gender_age)) {
+      result = true;
+  }
+
+  return result;
 }
 
 function newRules(gender, age) {
@@ -160,12 +174,7 @@ function oldRules(service, gender) {
     }
   }
   else{
-    if (gender == 'F') {
-      return 'private_woman';
-    }
-    else if (gender == 'M') {
-      return 'private_man';
-    }
+    return 'private';
   }
 }
 
@@ -178,37 +187,48 @@ function calculateNewRules(age, contribution) {
   return result;
 };
 
-function calculatePublicOldRulesWoman(age, contribution) {
-  var age_time = 55 - age;
-  var contribution_time = 30 - contribution;
-  var time_left = Math.max(age_time, contribution_time);
+function calcularEstatutarioPorContribuicao(age, contribution, gender) {
+  var gender_age_minimum = (gender == 'F' ? 60 : 65 );
+  var age_time_minimum = Number(gender_age_minimum) - Number(age);
+  var contribution_minimum = Number(10) - Number(contribution);
+  var time_left_minimum = Math.max(Number(age_time_minimum), Number(contribution_minimum));
+
+  var gender_age = (gender == 'F' ? 55 : 60 );
+  var gender_contribution = (gender == 'F' ? 30 : 35 );
+
+  var age_time = Number(gender_age) - Number(age);
+  var contribution_time = Number(gender_contribution) - Number(contribution);
+  var time_left_maximum = Math.max(Number(age_time), Number(contribution_time));
+
+
+  var time_left = [time_left_minimum, time_left_maximum];
+
+  return time_left;
+}
+
+function calcularCLTPorContribuicao(age, contribution, gender) {
+  var gender_age = (gender == 'F' ? 30 : 35 );
+  var gender_contribution = (gender == 'F' ? 85 : 95 );
+  var time_left_minimum = Number(gender_age) - Number(contribution);
+  var time_left_maximum = Number(gender_contribution) - (Number(age) + Number(contribution) );
+  var time_left = [time_left_minimum, time_left_maximum];
   return time_left;
 };
 
-function calculatePublicOldRulesMan(age, contribution) {
-  var age_time = 60 - age;
-  var contribution_time = 35 - contribution;
-  var time_left = Math.max(age_time, contribution_time);
-  return time_left;
-};
+function calcularCLTPorIdade(age, contribution, gender) {
+  var gender_age = (gender == 'F' ? 60 : 65 );
 
-function calculatePrivateOldRulesWoman(age, contribution) {
-  var age_time = 60 - age;
+  var age_time = gender_age - age;
   var age_contribution_time = 15 - contribution;
-  var contribution_time = 30 - contribution;
-  var age_time_left = Math.max(age_time, age_contribution_time);
-  var time_left = Math.min(age_time_left, contribution_time);
-  return time_left;
-};
+  var time_left_minimum = Math.max(age_time, age_contribution_time);
 
-function calculatePrivateOldRulesMan(age, contribution) {
-  var age_time = 65 - age;
-  var age_contribution_time = 15 - contribution;
-  var contribution_time = 35 - contribution;
-  var age_time_left = Math.max(age_time, age_contribution_time);
-  var time_left = Math.min(age_time_left, contribution_time);
+  var time_left_maximum = Number(time_left_minimum) + Number(30);
+  var time_left = [time_left_minimum, time_left_maximum];
   return time_left;
-};
+}
+
+
+
 
 function calculadoraNew(gender, age, contribution, service) {
  var rules = newRules(gender, age);
@@ -221,31 +241,29 @@ function calculadoraNew(gender, age, contribution, service) {
    var result_new = (1.5 * Math.abs(age - partial));
  }
 
- for (var i; i<result_new.lenght; i++) {
-   result_new[i] = Math.round( Number(result_new[i]) + Number(age));
-
- }
+ result_new = retorna_idade(result_new, age);
  return result_new;
 
 };
 
 function calculadoraOld(gender, age, contribution, service) {
- var rules = oldRules(service, gender);
+   var rules = oldRules(service, gender);
 
- if (rules == 'public_woman') {
-   var result_old = calculatePublicOldRulesWoman(age, contribution);
- }
- else if (rules == 'public_man') {
-   var result_old = calculatePublicOldRulesMan(age, contribution);
- }
- else if (rules == 'private_woman') {
-   var result_old = calculatePrivateOldRulesWoman(age, contribution);
- }
- else if (rules == 'private_man') {
-   var result_old = calculatePrivateOldRulesMan(age, contribution);
- }
- result_old = Number(result_old) + Number(age);
- return Math.round(result_old);
+   if (rules == 'private') {
+     var por_idade = calcularCLTPorIdade(age, contribution, gender);
+     var por_contribuicao = calcularCLTPorContribuicao(age, contribution, gender);
+
+     var result_old = minimo_de_duas_listas(por_idade, por_contribuicao);
+   }
+
+   else {
+     var result_old = calcularEstatutarioPorContribuicao(age, contribution, gender);
+
+   }
+
+  result_old = retorna_idade(result_old, age);
+
+  return result_old;
 };
 
 function message(element, text, gender){
@@ -274,5 +292,27 @@ function clear_results(div){
     };
   };
 };
+
+function minimo_de_duas_listas(lista_1, lista_2) {
+  var result = [];
+
+  for (var i=0; i <2; i++) {
+    result[i] = Math.min(Number(lista_1[i]), Number(lista_2[i]));
+  }
+
+  return result;
+}
+
+function retorna_idade (lista, idade_atual) {
+  var result = [];
+  for (var i=0; i <2; i++) {
+    result[i] = Math.round(Number(lista[i]) + Number(idade_atual));
+  }
+  return result;
+}
+
+
+
+
 
 </script>
