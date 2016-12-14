@@ -90,7 +90,7 @@
 </style>
 <div class='form'>
   <p class='descriptive'>A proposta de reforma da Previdência editada pelo governo não eleito de Michel Temer começou a tramitar oficialmente na Câmara nesta terça-feira (6).</p>
-  <p class='descriptive'>Para exemplificar as mudanças que a proposta quer implementar na atual legislação, o Brasil de Fato lança nesta quinta-feira (8) a Calculadora da Aposentadoria. Nela, o leitor poderá comparar as idades mínimas de contribuição para ter direito ao benefício parcial. Confira!</p>
+  <p class='descriptive'>Para exemplificar as mudanças que a proposta quer implementar na atual legislação, o Brasil de Fato lança nesta quinta-feira (8) a Calculadora da Aposentadoria. Confira!</p>
   <p class='label'>Você é:<p/>
   <input class='radio' type='radio' name='gender' value='F' checked> Mulher
   <input class='radio' type='radio' name='gender' value='M'> Homem<br>
@@ -164,14 +164,18 @@ function oldRules(service, gender) {
 function calculateNewRules(age, contribution) {
   var age_time = 65 - age;
   var contribution_time = 25 - contribution;
-  var time_left = Math.max(age_time, contribution_time);
+  var time_left_minimum = Math.max(age_time, contribution_time);
 
   var time_left_maximum  = Number(49) - Number(contribution);
-  var result = [time_left, time_left_maximum];
+
+  if(time_left_minimum > time_left_maximum){
+    time_left_minimum = time_left_maximum;
+  }
+  var result = [time_left_minimum, time_left_maximum];
   return result;
 };
 
-function calcularEstatutarioPorContribuicao(age, contribution, gender) {
+function calcularEstatutario(age, contribution, gender) {
   var gender_age_minimum = (gender == 'F' ? 60 : 65 );
   var age_time_minimum = Number(gender_age_minimum) - Number(age);
   var contribution_minimum = Number(10) - Number(contribution);
@@ -184,9 +188,13 @@ function calcularEstatutarioPorContribuicao(age, contribution, gender) {
   var age_time = Number(gender_age) - Number(age);
   var contribution_time = Number(gender_contribution) - Number(contribution);
   var time_left_maximum = Math.max(Number(age_time), Number(contribution_time));
-
-  if((time_left_maximum + age) >= gender_limit) {
+  var age_maximum = Number(time_left_maximum) + Number(age);
+  if((age_maximum) >= gender_limit) {
     time_left_maximum = gender_limit;
+  }
+
+  if(time_left_minimum > time_left_maximum){
+    time_left_minimum = time_left_maximum;
   }
 
   var time_left = [time_left_minimum, time_left_maximum];
@@ -205,6 +213,10 @@ function calcularCLTPorContribuicao(age, contribution, gender) {
   time_left_maximum = Math.round(Number(time_left_maximum)/Number(2));
   time_left_maximum = Math.max(0, time_left_maximum);
 
+  if(time_left_minimum > time_left_maximum){
+    time_left_minimum = time_left_maximum;
+  }
+
   var time_left = [time_left_minimum, time_left_maximum];
 
   return time_left;
@@ -218,6 +230,11 @@ function calcularCLTPorIdade(age, contribution, gender) {
   var time_left_minimum = Math.max(age_time, age_contribution_time);
 
   var time_left_maximum = Number(time_left_minimum) + Number(30);
+
+  if(time_left_minimum > time_left_maximum){
+    time_left_minimum = time_left_maximum;
+  }
+
   var time_left = [time_left_minimum, time_left_maximum];
   return time_left;
 }
@@ -252,7 +269,7 @@ function calculadoraOld(gender, age, contribution, service) {
    }
 
    else {
-     var result_old = calcularEstatutarioPorContribuicao(age, contribution, gender);
+     var result_old = calcularEstatutario(age, contribution, gender);
    }
 
   result_old = retorna_idade(result_old, age);
